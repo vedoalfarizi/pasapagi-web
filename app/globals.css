@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAFAF9; /* warm off-white */
+  --foreground: #1c271a; /* very dark green-gray */
+  
+  --sage-50: #f4f6f4;
+  --sage-100: #e2e8e3;
+  --sage-200: #c6d3c8;
+  --sage-300: #a0b6a4;
+  --sage-400: #7b9781;
+  --sage-500: #5e7c65;
+  --sage-600: #496250;
+  --sage-700: #3c4f42;
+  --sage-800: #324136;
+  --sage-900: #2a352c;
+  
+  --wa-green: #25D366;
+  --wa-green-hover: #20BA5A;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sage-50: var(--sage-50);
+  --color-sage-100: var(--sage-100);
+  --color-sage-200: var(--sage-200);
+  --color-sage-300: var(--sage-300);
+  --color-sage-400: var(--sage-400);
+  --color-sage-500: var(--sage-500);
+  --color-sage-600: var(--sage-600);
+  --color-sage-700: var(--sage-700);
+  --color-sage-800: var(--sage-800);
+  --color-sage-900: var(--sage-900);
+  --color-whatsapp: var(--wa-green);
+  --color-whatsapp-hover: var(--wa-green-hover);
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-sage-200 selection:text-sage-900;
+  }
+}
+
+/* Custom Scrollbar for a polished look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sage-200);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sage-300);
+}
