@@ -9,23 +9,19 @@
       "Padang"
     ],
     "images": [
-      "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1445282768818-728615cd2cbc?auto=format&fit=crop&w=600&q=80"
+      "/images/cabe.webp",
+      "/images/cabeaieangek.webp"
     ]
   },
   {
     "id": "p2",
     "name": "Ikan Kembung",
     "pricePerKg": 38000,
-    "stockStatus": "Tersedia",
+    "stockStatus": "Habis",
     "source": "Banda Aie, Padang",
     "destination": [
       "Bukittinggi"
     ],
-    "images": [
-      "https://images.unsplash.com/photo-1599084924616-72c1c69ba603?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1574781330855-d0db8ce60179?auto=format&fit=crop&w=600&q=80"
-    ]
+    "images": []
   }
 ]

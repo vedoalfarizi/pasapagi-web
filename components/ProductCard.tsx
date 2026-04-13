@@ -1,6 +1,7 @@
 'use client';
 
 import { Product } from '@/types';
+import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import { MapPin, ShoppingBag, LeafyGreen, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -39,12 +40,12 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
         <div className="flex h-full">
           {product.images.map((img, idx) => (
             <div className="flex-[0_0_100%] min-w-0 relative h-full" key={idx}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={img}
                 alt={`${product.name} - image ${idx + 1}`}
-                className="w-full h-full object-cover"
-                loading="lazy"
+                fill
+                className="object-cover"
+                sizes="(max-width: 512px) 100vw, 512px"
               />
             </div>
           ))}
