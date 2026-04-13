@@ -12,7 +12,7 @@ export function Header() {
           <span className="font-bold text-xl tracking-tight text-sage-900">PasaPagi</span>
         </Link>
         <div className="text-xs font-medium text-sage-500 bg-sage-50 px-3 py-1 rounded-full border border-sage-100">
-          Organic & Fresh
+          Fresh & High Quality
         </div>
       </div>
     </header>

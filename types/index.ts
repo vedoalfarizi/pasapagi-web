@@ -1,8 +1,8 @@
 export interface Product {
     id: string;
     name: string;
-    pricePerKg: number;
-    stockStatus: 'Tersedia' | 'Stok Terbatas' | 'Habis';
+    pricePerKg: number | string;
+    stockStatus: 'Tersedia' | 'Segera Hadir' | 'Habis';
     source: string;
     destination: string[];
     images: string[];
