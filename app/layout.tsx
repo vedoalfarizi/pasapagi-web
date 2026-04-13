@@ -12,8 +12,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "PasaPagi | Organik & Segar",
-  description: "Sayuran organik dan hasil laut segar yang diantar langsung ke rumah Anda.",
+  title: "PasaPagi | Segar & Kualitas Terbaik",
+  description: "Sayuran dan hasil laut segar dengan kualitas terbaik yang diantar langsung ke rumah Anda.",
 };
 
 export default function RootLayout({

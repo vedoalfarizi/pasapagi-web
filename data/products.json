@@ -2,8 +2,8 @@
   {
     "id": "p1",
     "name": "Cabe Merah Keriting",
-    "pricePerKg": 37000,
-    "stockStatus": "Tersedia",
+    "pricePerKg": "35000 - 45000",
+    "stockStatus": "Segera Hadir",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": [
       "Padang"
@@ -15,19 +15,6 @@
   },
   {
     "id": "p2",
-    "name": "Ikan Kembung",
-    "pricePerKg": "60000 - 80000",
-    "stockStatus": "Segera Hadir",
-    "source": "Banda Aie, Padang",
-    "destination": [
-      "Bukittinggi"
-    ],
-    "images": [
-      "/images/kembung.webp"
-    ]
-  },
-  {
-    "id": "p3",
     "name": "Brokoli",
     "pricePerKg": 40000,
     "stockStatus": "Habis",
@@ -37,6 +24,19 @@
     ],
     "images": [
       "/images/brokoli.webp"
+    ]
+  },
+  {
+    "id": "p3",
+    "name": "Ikan Kembung",
+    "pricePerKg": "60000 - 80000",
+    "stockStatus": "Segera Hadir",
+    "source": "Banda Aie, Padang",
+    "destination": [
+      "Bukittinggi"
+    ],
+    "images": [
+      "/images/kembung.webp"
     ]
   }
 ]
