@@ -5,9 +5,7 @@
     "pricePerKg": "35000 - 45000",
     "stockStatus": "Segera Hadir",
     "source": "Nagari Aia Angek, Tanah Datar",
-    "destination": [
-      "Padang"
-    ],
+    "destination": "Padang",
     "images": [
       "/images/cabe.webp",
       "/images/cabeaieangek.webp"
@@ -19,9 +17,7 @@
     "pricePerKg": 40000,
     "stockStatus": "Habis",
     "source": "Nagari Aia Angek, Tanah Datar",
-    "destination": [
-      "Padang"
-    ],
+    "destination": "Padang",
     "images": [
       "/images/brokoli.webp"
     ]
@@ -32,9 +28,7 @@
     "pricePerKg": "60000 - 80000",
     "stockStatus": "Segera Hadir",
     "source": "Banda Aie, Padang",
-    "destination": [
-      "Bukittinggi"
-    ],
+    "destination": "Bukittinggi",
     "images": [
       "/images/kembung.webp"
     ]

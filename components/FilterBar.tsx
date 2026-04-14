@@ -5,9 +5,10 @@ interface FilterBarProps {
   options: string[];
   selected: string;
   onChange: (value: string) => void;
+  isAutoDetected?: boolean;
 }
 
-export function FilterBar({ options, selected, onChange }: FilterBarProps) {
+export function FilterBar({ options, selected, onChange, isAutoDetected }: FilterBarProps) {
   return (
     <div className="bg-white border-b border-sage-100 shadow-sm sticky top-16 z-40">
       <div className="container mx-auto px-4 py-3 max-w-lg">
@@ -16,7 +17,14 @@ export function FilterBar({ options, selected, onChange }: FilterBarProps) {
             <MapPin className="w-4 h-4" />
           </div>
           <div className="flex-1">
-            <p className="text-xs font-medium text-sage-500 mb-0.5">Dikirim ke:</p>
+            <p className="text-xs font-medium text-sage-500 mb-0.5 flex items-center gap-2">
+              Dikirim ke: 
+              {isAutoDetected && (
+                <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded text-wa-green truncate flex-shrink-0">
+                  📍 Sekitar Anda
+                </span>
+              )}
+            </p>
             <select
               value={selected}
               onChange={(e) => onChange(e.target.value)}
@@ -28,7 +36,7 @@ export function FilterBar({ options, selected, onChange }: FilterBarProps) {
               <option value="">Semua Lokasi / Pilih Tujuan</option>
               {options.map((opt) => (
                 <option key={opt} value={opt}>
-                  {opt}
+                  {isAutoDetected && selected === opt ? `📍 ${opt}` : opt}
                 </option>
               ))}
             </select>

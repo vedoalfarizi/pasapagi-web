@@ -4,7 +4,7 @@ export interface Product {
     pricePerKg: number | string;
     stockStatus: 'Tersedia' | 'Segera Hadir' | 'Habis';
     source: string;
-    destination: string[];
+    destination: string;
     images: string[];
   }
   

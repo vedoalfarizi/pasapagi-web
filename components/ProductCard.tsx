@@ -39,9 +39,9 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
-    
+
     if (typeof price === 'number') return formatter.format(price);
-    
+
     const parts = price.toString().split('-').map(p => p.trim());
     if (parts.length === 2 && !isNaN(Number(parts[0])) && !isNaN(Number(parts[1]))) {
       return `${formatter.format(Number(parts[0]))} - ${formatter.format(Number(parts[1]))}`;
@@ -55,6 +55,17 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
       message += ` Untuk pengiriman ke ${selectedDestination}.`;
     }
     return `/api/whatsapp?text=${encodeURIComponent(message)}`;
+  };
+
+  const dynamicGroupLinks: Record<string, string | undefined> = {
+    'Padang': process.env.NEXT_PUBLIC_WA_GROUP_PADANG,
+    'Bukittinggi': process.env.NEXT_PUBLIC_WA_GROUP_BUKITTINGGI
+  };
+
+  const getWaGroupLink = () => {
+    const link = dynamicGroupLinks[product.destination];
+    if (link) return link;
+    return `https://wa.me/${process.env.NEXT_PUBLIC_WA_PHONE || ''}?text=Halo, info pre-order produk PasaPagi area ${product.destination}`;
   };
 
   return (
@@ -75,9 +86,9 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
           ))}
           {/* Fallback pattern if no images */}
           {product.images.length === 0 && (
-             <div className="flex-[0_0_100%] min-w-0 relative h-full flex items-center justify-center bg-sage-100">
-               <Package className="w-12 h-12 text-sage-300" />
-             </div>
+            <div className="flex-[0_0_100%] min-w-0 relative h-full flex items-center justify-center bg-sage-100">
+              <Package className="w-12 h-12 text-sage-300" />
+            </div>
           )}
         </div>
 
@@ -86,25 +97,25 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
           {product.stockStatus !== 'Tersedia' && (
             <span className={cn(
               "px-2.5 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md",
-              product.stockStatus === 'Segera Hadir' 
-                ? "bg-amber-100/90 text-amber-800" 
+              product.stockStatus === 'Segera Hadir'
+                ? "bg-amber-100/90 text-amber-800"
                 : "bg-sage-100/90 text-sage-600"
             )}>
               {product.stockStatus}
             </span>
           )}
         </div>
-        
+
         {/* Embla dots indicator */}
         {scrollSnaps.length > 1 && (
           <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10">
             {scrollSnaps.map((_, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={cn(
-                  "h-1.5 rounded-full transition-all duration-300", 
+                  "h-1.5 rounded-full transition-all duration-300",
                   index === selectedIndex ? "w-4 bg-white shadow-sm" : "w-1.5 bg-white/60"
-                )} 
+                )}
               />
             ))}
           </div>
@@ -115,7 +126,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
       <div className="p-4 flex flex-col flex-1 gap-4">
         <div>
           <h3 className="font-bold text-lg leading-tight text-sage-900 mb-1">{product.name}</h3>
-          
+
           {product.stockStatus !== 'Habis' ? (
             <div className="flex items-end gap-1 mb-3">
               <span className="text-xl font-black text-sage-800">{formatPrice(product.pricePerKg)}</span>
@@ -139,7 +150,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-sage-400" />
               <span className="truncate line-clamp-1">
-                Kirim ke: {product.destination.join(', ')}
+                Kirim ke: {product.destination}
               </span>
             </div>
           </div>
@@ -158,10 +169,10 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
               Order via WhatsApp
             </a>
           )}
-          
+
           {product.stockStatus === 'Segera Hadir' && (
             <a
-              href={process.env.NEXT_PUBLIC_WA_GROUP_LINK || "#"}
+              href={getWaGroupLink()}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base transition-all active:scale-[0.98] bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-500/30"
