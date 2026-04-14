@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Product } from '@/types';
 import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
-import { MapPin, LeafyGreen, Package } from 'lucide-react';
+import { MapPin, LeafyGreen, Package, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -81,6 +81,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
                 fill
                 className="object-cover"
                 sizes="(max-width: 512px) 100vw, 512px"
+                priority={idx === 0}
               />
             </div>
           ))}
@@ -153,6 +154,14 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
                 Kirim ke: {product.destination}
               </span>
             </div>
+            {product.stockStatus === 'Tersedia' && product.deliveryDate && (
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-sage-400" />
+                <span className="truncate line-clamp-1">
+                  Pengiriman: {product.deliveryDate}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

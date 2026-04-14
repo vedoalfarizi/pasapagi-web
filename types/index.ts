@@ -5,6 +5,7 @@ export interface Product {
     stockStatus: 'Tersedia' | 'Segera Hadir' | 'Habis';
     source: string;
     destination: string;
+    deliveryDate?: string;
     images: string[];
   }
   

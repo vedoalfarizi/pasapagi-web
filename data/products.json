@@ -6,6 +6,7 @@
     "stockStatus": "Segera Hadir",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
+    "deliveryDate": "Sabtu, 18 April 2026",
     "images": [
       "/images/cabe.webp",
       "/images/cabeaieangek.webp"
@@ -18,6 +19,7 @@
     "stockStatus": "Habis",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
+    "deliveryDate": "Sabtu, 18 April 2026",
     "images": [
       "/images/brokoli.webp"
     ]
@@ -29,6 +31,7 @@
     "stockStatus": "Segera Hadir",
     "source": "Banda Aie, Padang",
     "destination": "Bukittinggi",
+    "deliveryDate": "Sabtu, 18 April 2026",
     "images": [
       "/images/kembung.webp"
     ]

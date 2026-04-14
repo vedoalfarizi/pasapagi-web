@@ -8,7 +8,7 @@ export function Header() {
       <div className="container mx-auto px-4 h-16 flex items-center justify-between max-w-lg">
         <Link href="/" className="flex items-center gap-2">
           <div className="relative w-8 h-8 rounded-lg overflow-hidden shrink-0 shadow-sm border border-sage-200/50">
-            <Image src="/images/icon.webp" alt="PasaPagi Logo" fill className="object-cover" />
+            <Image src="/images/icon.webp" alt="PasaPagi Logo" fill sizes="32px" className="object-cover" />
           </div>
           <span className="font-bold text-xl tracking-tight text-sage-900">PasaPagi</span>
         </Link>
