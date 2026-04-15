@@ -335,13 +335,15 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
               <div className="text-center text-xs font-bold text-sage-700 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
                 PO Ditutup
               </div>
-            <button
-              disabled
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
-            >
-              <Package className="w-5 h-5" />
-              PO Ditutup
-            </button>
+              <a
+                href={getWaGroupLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-sm sm:text-base transition-all active:scale-[0.98] bg-sage-600 hover:bg-sage-700 text-white shadow-sm shadow-sage-600/30"
+              >
+                <Package className="w-5 h-5" />
+                Dapatkan info PO berikutnya di WhatsApp
+              </a>
             </div>
           )}
         </div>
