@@ -6,6 +6,8 @@ export interface Product {
     source: string;
     destination: string;
     deliveryDate?: string;
+    preOrderUntil?: string;
+    stockRemaining?: number;
     images: string[];
   }
   

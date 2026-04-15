@@ -2,11 +2,13 @@
   {
     "id": "p1",
     "name": "Cabe Merah Keriting",
-    "pricePerKg": "35000 - 45000",
-    "stockStatus": "Segera Hadir",
+    "pricePerKg": 40000,
+    "stockStatus": "Tersedia",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
     "deliveryDate": "Sabtu, 18 April 2026",
+    "preOrderUntil": "2026-04-18T12:00:00Z",
+    "stockRemaining": 3,
     "images": [
       "/images/cabe.webp",
       "/images/cabeaieangek.webp"
@@ -20,6 +22,7 @@
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
     "deliveryDate": "Sabtu, 18 April 2026",
+    "stockRemaining": 0,
     "images": [
       "/images/brokoli.webp"
     ]
@@ -32,6 +35,8 @@
     "source": "Banda Aie, Padang",
     "destination": "Bukittinggi",
     "deliveryDate": "Sabtu, 18 April 2026",
+    "preOrderUntil": "2026-04-20T23:59:59Z",
+    "stockRemaining": 15,
     "images": [
       "/images/kembung.webp"
     ]

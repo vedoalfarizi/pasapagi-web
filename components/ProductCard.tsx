@@ -32,6 +32,34 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
     emblaApi.on('reInit', onInit).on('reInit', onSelect).on('select', onSelect);
   }, [emblaApi, onInit, onSelect]);
 
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (product.stockStatus !== 'Tersedia' || !product.preOrderUntil) return;
+
+    const calculateTimeLeft = () => {
+      const now = new Date().getTime();
+      const end = new Date(product.preOrderUntil!).getTime();
+      setTimeLeft(Math.max(0, end - now));
+    };
+
+    calculateTimeLeft(); // initialize
+    const timer = setInterval(calculateTimeLeft, 1000);
+    return () => clearInterval(timer);
+  }, [product.preOrderUntil, product.stockStatus]);
+  
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+    const m = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+    const s = String(totalSeconds % 60).padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  const isPoClosed = Boolean(product.preOrderUntil && timeLeft === 0 && mounted);
+
   const formatPrice = (price: number | string) => {
     const formatter = new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -167,16 +195,45 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
 
         {/* CTA Elements */}
         <div className="mt-auto pt-2">
-          {product.stockStatus === 'Tersedia' && (
-            <a
-              href={getWhatsAppLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base transition-all active:scale-[0.98] bg-[var(--color-whatsapp)] hover:bg-[var(--color-whatsapp-hover)] text-white shadow-sm shadow-[#25D366]/30"
+          {/* FOMO Stock Scarcity */}
+          {product.stockStatus === 'Tersedia' && product.stockRemaining !== undefined && (
+            <div className="mb-2.5 px-0.5 text-center">
+               <span className={cn(
+                 "text-sm font-black", 
+                 product.stockRemaining <= 5 ? "text-orange-500 animate-pulse" : "text-sage-600"
+               )}>
+                 Sisa {product.stockRemaining} kg lagi!
+               </span>
+            </div>
+          )}
+
+          {product.stockStatus === 'Tersedia' && !isPoClosed && (
+            <div className="flex flex-col gap-2">
+              {product.preOrderUntil && (
+                <div className="text-center text-xs font-bold text-sage-600 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
+                  ⏳ PO Berakhir Dalam: <span className="font-mono text-sage-900 tracking-wider text-sm ml-1">{mounted ? formatTime(timeLeft) : "--:--:--"}</span>
+                </div>
+              )}
+              <a
+                href={getWhatsAppLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base transition-all active:scale-[0.98] bg-[var(--color-whatsapp)] hover:bg-[var(--color-whatsapp-hover)] text-white shadow-sm shadow-[#25D366]/30"
+              >
+                <Package className="w-5 h-5" />
+                Order via WhatsApp
+              </a>
+            </div>
+          )}
+
+          {product.stockStatus === 'Tersedia' && isPoClosed && (
+            <button
+              disabled
+              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
             >
               <Package className="w-5 h-5" />
-              Order via WhatsApp
-            </a>
+              PO Ditutup
+            </button>
           )}
 
           {product.stockStatus === 'Segera Hadir' && (
