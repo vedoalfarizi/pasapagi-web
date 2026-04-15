@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Product } from '@/types';
 import Image from 'next/image';
+import type { EmblaCarouselType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
 import { MapPin, LeafyGreen, Package, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,43 +13,62 @@ interface ProductCardProps {
   selectedDestination: string;
 }
 
+export type DerivedPhase = 'LOADING' | 'UPCOMING' | 'ACTIVE' | 'SOLD_OUT' | 'FINISHED';
+
+const phaseBadgeLabels: Record<Exclude<DerivedPhase, 'ACTIVE' | 'LOADING'>, string> = {
+  UPCOMING: 'Segera Hadir',
+  SOLD_OUT: 'Stok Habis',
+  FINISHED: 'PO Ditutup',
+};
+
 export function ProductCard({ product, selectedDestination }: ProductCardProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState(0);
 
-  const onInit = useCallback((api: any) => {
+  const onInit = useCallback((api: EmblaCarouselType) => {
     setScrollSnaps(api.scrollSnapList());
   }, []);
 
-  const onSelect = useCallback((api: any) => {
+  const onSelect = useCallback((api: EmblaCarouselType) => {
     setSelectedIndex(api.selectedScrollSnap());
   }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
-    onInit(emblaApi);
-    onSelect(emblaApi);
+
+    const frame = window.requestAnimationFrame(() => {
+      onInit(emblaApi);
+      onSelect(emblaApi);
+    });
+
     emblaApi.on('reInit', onInit).on('reInit', onSelect).on('select', onSelect);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      emblaApi.off('reInit', onInit);
+      emblaApi.off('reInit', onSelect);
+      emblaApi.off('select', onSelect);
+    };
   }, [emblaApi, onInit, onSelect]);
 
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
   useEffect(() => {
-    setMounted(true);
-    if (product.stockStatus !== 'Tersedia' || !product.preOrderUntil) return;
+    const frame = window.requestAnimationFrame(() => {
+      setMounted(true);
+      setNow(Date.now());
+    });
 
-    const calculateTimeLeft = () => {
-      const now = new Date().getTime();
-      const end = new Date(product.preOrderUntil!).getTime();
-      setTimeLeft(Math.max(0, end - now));
+    const timer = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.clearInterval(timer);
     };
-
-    calculateTimeLeft(); // initialize
-    const timer = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(timer);
-  }, [product.preOrderUntil, product.stockStatus]);
+  }, []);
   
   const formatTime = (ms: number) => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -58,7 +78,26 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
     return `${h}:${m}:${s}`;
   };
 
-  const isPoClosed = Boolean(product.preOrderUntil && timeLeft === 0 && mounted);
+  const formatPreOrderStart = (dateString: string) => {
+    const date = new Date(dateString);
+    const parts = new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).formatToParts(date);
+
+    const day = parts.find((part) => part.type === 'day')?.value;
+    const month = parts.find((part) => part.type === 'month')?.value;
+    const hour = parts.find((part) => part.type === 'hour')?.value;
+    const minute = parts.find((part) => part.type === 'minute')?.value;
+
+    if (!day || !month || !hour || !minute) {
+      return 'Buka segera';
+    }
+
+    return `Pre-order akan dibuka pada ${day} ${month} pukul ${hour}:${minute}`;
+  };
 
   const formatPrice = (price: number | string) => {
     const formatter = new Intl.NumberFormat('id-ID', {
@@ -76,6 +115,21 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
     }
     return price;
   };
+
+  const preOrderStartTime = new Date(product.preOrderStart).getTime();
+  const preOrderEndTime = new Date(product.preOrderUntil).getTime();
+
+  const getCurrentPhase = (): DerivedPhase => {
+    if (!mounted) return 'LOADING';
+    if (Number.isNaN(preOrderStartTime) || Number.isNaN(preOrderEndTime)) return 'FINISHED';
+    if (now < preOrderStartTime) return 'UPCOMING';
+    if (now > preOrderEndTime) return 'FINISHED';
+    if (product.stockRemaining <= 0) return 'SOLD_OUT';
+    return 'ACTIVE';
+  };
+
+  const phase = getCurrentPhase();
+  const timeLeft = Math.max(0, preOrderEndTime - now);
 
   const getWhatsAppLink = () => {
     let message = `Halo PasaPagi, saya mau pesan ${product.name}.`;
@@ -95,6 +149,9 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
     if (link) return link;
     return `https://wa.me/${process.env.NEXT_PUBLIC_WA_PHONE || ''}?text=Halo, info pre-order produk PasaPagi area ${product.destination}`;
   };
+
+  const shouldShowPhaseBadge = phase !== 'ACTIVE' && phase !== 'LOADING';
+  const showInactivePrice = phase === 'SOLD_OUT';
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-sage-100 flex flex-col hover:shadow-md transition-shadow">
@@ -123,14 +180,16 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
 
         {/* Badges Overlay */}
         <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-          {product.stockStatus !== 'Tersedia' && (
+          {shouldShowPhaseBadge && (
             <span className={cn(
               "px-2.5 py-1 rounded-full text-xs font-bold shadow-sm backdrop-blur-md",
-              product.stockStatus === 'Segera Hadir'
+              phase === 'UPCOMING'
                 ? "bg-amber-100/90 text-amber-800"
-                : "bg-sage-100/90 text-sage-600"
+                : phase === 'SOLD_OUT'
+                  ? "bg-orange-100/90 text-orange-800"
+                  : "bg-sage-100/90 text-sage-700"
             )}>
-              {product.stockStatus}
+              {phaseBadgeLabels[phase]}
             </span>
           )}
         </div>
@@ -156,7 +215,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
         <div>
           <h3 className="font-bold text-lg leading-tight text-sage-900 mb-1">{product.name}</h3>
 
-          {product.stockStatus !== 'Habis' ? (
+          {!showInactivePrice ? (
             <div className="flex items-end gap-1 mb-3">
               <span className="text-xl font-black text-sage-800">{formatPrice(product.pricePerKg)}</span>
               <span className="text-sm font-medium text-sage-400 mb-1">/ kg</span>
@@ -182,7 +241,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
                 Kirim ke: {product.destination}
               </span>
             </div>
-            {product.stockStatus === 'Tersedia' && product.deliveryDate && (
+            {phase === 'ACTIVE' && product.deliveryDate && (
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-sage-400" />
                 <span className="truncate line-clamp-1">
@@ -196,7 +255,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
         {/* CTA Elements */}
         <div className="mt-auto pt-2">
           {/* FOMO Stock Scarcity */}
-          {product.stockStatus === 'Tersedia' && product.stockRemaining !== undefined && (
+          {phase === 'ACTIVE' && (
             <div className="mb-2.5 px-0.5 text-center">
                <span className={cn(
                  "text-sm font-black", 
@@ -207,13 +266,43 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
             </div>
           )}
 
-          {product.stockStatus === 'Tersedia' && !isPoClosed && (
+          {phase === 'LOADING' && (
             <div className="flex flex-col gap-2">
-              {product.preOrderUntil && (
-                <div className="text-center text-xs font-bold text-sage-600 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
-                  ⏳ PO Berakhir Dalam: <span className="font-mono text-sage-900 tracking-wider text-sm ml-1">{mounted ? formatTime(timeLeft) : "--:--:--"}</span>
-                </div>
-              )}
+              <div className="text-center text-xs font-bold text-sage-500 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
+                Status pre-order: <span className="font-mono tracking-wider text-sm ml-1">--:--</span>
+              </div>
+              <button
+                disabled
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
+              >
+                <Package className="w-5 h-5" />
+                Memuat status
+              </button>
+            </div>
+          )}
+
+          {phase === 'UPCOMING' && (
+            <div className="flex flex-col gap-2">
+              <div className="text-center text-xs font-bold text-amber-800 bg-amber-50 py-2 rounded-xl border border-amber-100 shadow-sm">
+                {formatPreOrderStart(product.preOrderStart)}
+              </div>
+              <a
+                href={getWaGroupLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base transition-all active:scale-[0.98] bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-500/30"
+              >
+                <Package className="w-5 h-5" />
+                Pantau Stok di WhatsApp
+              </a>
+            </div>
+          )}
+
+          {phase === 'ACTIVE' && (
+            <div className="flex flex-col gap-2">
+              <div className="text-center text-xs font-bold text-sage-600 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
+                ⏳ PO Berakhir Dalam: <span className="font-mono text-sage-900 tracking-wider text-sm ml-1">{formatTime(timeLeft)}</span>
+              </div>
               <a
                 href={getWhatsAppLink()}
                 target="_blank"
@@ -226,7 +315,26 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
             </div>
           )}
 
-          {product.stockStatus === 'Tersedia' && isPoClosed && (
+          {phase === 'SOLD_OUT' && (
+            <div className="flex flex-col gap-2">
+              <div className="text-center text-xs font-bold text-orange-700 bg-orange-50 py-2 rounded-xl border border-orange-100 shadow-sm">
+                Stok habis untuk periode pre-order ini.
+              </div>
+              <button
+                disabled
+                className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
+              >
+                <Package className="w-5 h-5" />
+                Stok Habis
+              </button>
+            </div>
+          )}
+
+          {phase === 'FINISHED' && (
+            <div className="flex flex-col gap-2">
+              <div className="text-center text-xs font-bold text-sage-700 bg-sage-50 py-2 rounded-xl border border-sage-100 shadow-sm">
+                PO Ditutup
+              </div>
             <button
               disabled
               className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
@@ -234,28 +342,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
               <Package className="w-5 h-5" />
               PO Ditutup
             </button>
-          )}
-
-          {product.stockStatus === 'Segera Hadir' && (
-            <a
-              href={getWaGroupLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base transition-all active:scale-[0.98] bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-500/30"
-            >
-              <Package className="w-5 h-5" />
-              Pantau Stok di WhatsApp
-            </a>
-          )}
-
-          {product.stockStatus === 'Habis' && (
-            <button
-              disabled
-              className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl font-bold text-base bg-sage-100 text-sage-400 cursor-not-allowed"
-            >
-              <Package className="w-5 h-5" />
-              Stok Habis
-            </button>
+            </div>
           )}
         </div>
       </div>

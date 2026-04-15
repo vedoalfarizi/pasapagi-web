@@ -1,42 +1,43 @@
 [
   {
-    "id": "p1",
+    "id": "bd44a16e-d716-4f8a-80f1-ccead0d1f9ae",
     "name": "Cabe Merah Keriting",
     "pricePerKg": "36000-38000",
-    "stockStatus": "Segera Hadir",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
     "deliveryDate": "Minggu, 19 April 2026",
-    "preOrderUntil": "2026-04-18T07:00:00Z",
-    "stockRemaining": 20,
+    "preOrderStart": "2026-04-18T06:00:00+07:00",
+    "preOrderUntil": "2026-04-18T14:00:00+07:00",
+    "stockRemaining": 18,
     "images": [
-      "/images/cabe.webp",
-      "/images/cabeaieangek.webp"
+      "/images/cabeaieangek.webp",
+      "/images/cabe.webp"
     ]
   },
   {
-    "id": "p2",
+    "id": "27e574a4-bee4-4107-9a1a-4e864de8d55b",
     "name": "Brokoli",
     "pricePerKg": 40000,
-    "stockStatus": "Habis",
     "source": "Nagari Aia Angek, Tanah Datar",
     "destination": "Padang",
     "deliveryDate": "",
+    "preOrderStart": "",
+    "preOrderUntil": "",
     "stockRemaining": 0,
     "images": [
       "/images/brokoli.webp"
     ]
   },
   {
-    "id": "p3",
+    "id": "a738f7a5-c33f-4f07-a9ed-f94607c579f5",
     "name": "Ikan Kembung",
     "pricePerKg": "60000 - 80000",
-    "stockStatus": "Segera Hadir",
     "source": "Pantai Banda Aie, Padang",
     "destination": "Bukittinggi",
-    "deliveryDate": "Minggu, 19 April 2026",
-    "preOrderUntil": "2026-04-19T11:00:00Z",
-    "stockRemaining": 20,
+    "deliveryDate": "",
+    "preOrderStart": "",
+    "preOrderUntil": "",
+    "stockRemaining": 0,
     "images": [
       "/images/kembung.webp"
     ]

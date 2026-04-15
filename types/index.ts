@@ -1,13 +1,13 @@
 export interface Product {
-    id: string;
-    name: string;
-    pricePerKg: number | string;
-    stockStatus: 'Tersedia' | 'Segera Hadir' | 'Habis';
-    source: string;
-    destination: string;
-    deliveryDate?: string;
-    preOrderUntil?: string;
-    stockRemaining?: number;
-    images: string[];
-  }
+  id: string;
+  name: string;
+  pricePerKg: number | string;
+  source: string;
+  destination: string;
+  deliveryDate?: string;
+  preOrderStart: string;
+  preOrderUntil: string;
+  stockRemaining: number;
+  images: string[];
+}
   
