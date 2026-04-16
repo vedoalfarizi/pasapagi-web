@@ -36,8 +36,8 @@ Row 1 must contain these exact column names (case-sensitive):
 
 | Variable | When it is used |
 |---|---|
-| `GOOGLE_SHEETS_PRODUCTS_CSV_URL_STAGING` | `NODE_ENV !== 'production'` (local dev, preview deploys) |
-| `GOOGLE_SHEETS_PRODUCTS_CSV_URL_PRODUCTION` | `NODE_ENV === 'production'` (production deploy) |
+| `GOOGLE_SHEETS_PRODUCTS_CSV_URL_STAGING` | `APP_ENV !== 'production'` (local dev, preview deploys) |
+| `GOOGLE_SHEETS_PRODUCTS_CSV_URL_PRODUCTION` | `APP_ENV === 'production'` (production deploy) |
 
 Create `.env.local` for local development:
 

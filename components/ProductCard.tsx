@@ -219,7 +219,7 @@ export function ProductCard({ product, selectedDestination }: ProductCardProps) 
             <div className="flex items-end gap-1 mb-3">
               <span className="text-xl font-black text-sage-800">{formatPrice(product.pricePerKg)}</span>
               <span className="text-sm font-medium text-sage-400 mb-1">/ kg</span>
-              {typeof product.pricePerKg === 'string' && (
+              {typeof product.pricePerKg === 'string' && /\d\s*-\s*\d/.test(product.pricePerKg) && (
                 <div className="relative group mb-1 ml-0.5">
                   <Info className="w-3.5 h-3.5 text-sage-400 cursor-help" />
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 w-48 px-2.5 py-1.5 rounded-lg bg-sage-800 text-white text-xs font-medium text-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20">

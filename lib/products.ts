@@ -2,7 +2,7 @@ import Papa from 'papaparse';
 import { Product } from '@/types';
 
 function getSheetUrl(): string {
-  const isProduction = process.env.NODE_ENV === 'production';
+  const isProduction = process.env.APP_ENV === 'production';
   const url = isProduction
     ? process.env.GOOGLE_SHEETS_PRODUCTS_CSV_URL_PRODUCTION
     : process.env.GOOGLE_SHEETS_PRODUCTS_CSV_URL_STAGING;
